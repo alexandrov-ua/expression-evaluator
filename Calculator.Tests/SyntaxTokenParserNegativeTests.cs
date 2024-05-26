@@ -12,7 +12,7 @@ namespace Calculator.Tests
     {
         private static DiagnosticsEntry[] ParseFailed(string input)
         {
-            var parser = new SyntaxTokenParser(new SyntaxTokenEnumerable(input));
+            var parser = new SyntaxTokenParser(new SyntaxTokenEnumerator(input));
             var parserResult = parser.Parse();
             parserResult.IsSuccessful.Should().BeFalse();
             return parserResult.Diagnostics;

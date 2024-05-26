@@ -1,19 +1,50 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Calculator.Core;
 using Calculator.Core.Lexer;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Calculator.Tests
 {
+    public static class Ext
+    {
+        public static IEnumerable<(SyntaxTokenKind, string, int)> ToListOfTuple(this SyntaxTokenEnumerator iterator)
+        {
+            List<(SyntaxTokenKind, string, int)> result = new List<(SyntaxTokenKind, string, int)>();
+
+            while (iterator.MoveNext())
+            {
+                result.Add(new (iterator.Current.Kind, iterator.Current.Text.ToString(), iterator.Current.StartIndex));
+            }
+
+            return result;
+        }
+    }
+
     public class SyntaxTokenEnumerableTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+
+        public SyntaxTokenEnumerableTests(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
+        [Fact]
+        public void Foo()
+        {
+            _testOutputHelper.WriteLine(string.Join("+", Enumerable.Range(1,100).Select(i=>i.ToString())));
+        }
+
         [Fact]
         public void SyntaxTokenEnumerable_ShouldByAbleToParse_Operations()
         {
-            new SyntaxTokenEnumerable(" + -/ *")
-                .Select(t => (t.Kind, t.Text, t.StartIndex))
+            new SyntaxTokenEnumerator(" + -/ *")
+                .ToListOfTuple()
                 .Should()
                 .BeEquivalentTo(new[]
                 {
@@ -28,8 +59,8 @@ namespace Calculator.Tests
         [Fact]
         public void SyntaxTokenEnumerable_ShouldByAbleToParse_Parenthesis()
         {
-            new SyntaxTokenEnumerable("( ) (")
-                .Select(t => (t.Kind, t.Text, t.StartIndex))
+            new SyntaxTokenEnumerator("( ) (")
+                .ToListOfTuple()
                 .Should()
                 .BeEquivalentTo(new[]
                 {
@@ -43,8 +74,8 @@ namespace Calculator.Tests
         [Fact]
         public void SyntaxTokenEnumerable_ShouldByAbleToParse_Numbers()
         {
-            new SyntaxTokenEnumerable("12+3.0-7.")
-                .Select(t => (t.Kind, t.Text, t.StartIndex))
+            new SyntaxTokenEnumerator("12+3.0-7.")
+                .ToListOfTuple()
                 .Should()
                 .BeEquivalentTo(new[]
                 {
@@ -60,8 +91,8 @@ namespace Calculator.Tests
         [Fact]
         public void SyntaxTokenEnumerable_ShouldByAbleToParse_Identifier()
         {
-            new SyntaxTokenEnumerable("sin(0.5)")
-                .Select(t => (t.Kind, t.Text, t.StartIndex))
+            new SyntaxTokenEnumerator("sin(0.5)")
+                .ToListOfTuple()
                 .Should()
                 .BeEquivalentTo(new[]
                 {
@@ -76,8 +107,8 @@ namespace Calculator.Tests
         [Fact]
         public void SyntaxTokenEnumerable_ShouldByAbleToParse_Identifier2()
         {
-            new SyntaxTokenEnumerable("log10(0.5)")
-                .Select(t => (t.Kind, t.Text, t.StartIndex))
+            new SyntaxTokenEnumerator("log10(0.5)")
+                .ToListOfTuple()
                 .Should()
                 .BeEquivalentTo(new[]
                 {
@@ -92,8 +123,8 @@ namespace Calculator.Tests
         [Fact]
         public void SyntaxTokenEnumerable_ShouldByAbleToHandle_UnknownTokens()
         {
-            new SyntaxTokenEnumerable("!2qwe#")
-                .Select(t => (t.Kind, t.Text, t.StartIndex))
+            new SyntaxTokenEnumerator("!2qwe#")
+                .ToListOfTuple()
                 .Should()
                 .BeEquivalentTo(new[]
                 {
@@ -108,8 +139,8 @@ namespace Calculator.Tests
         [Fact]
         public void SyntaxTokenEnumerable_ShouldByAbleToHandle_EmptyString()
         {
-            new SyntaxTokenEnumerable("")
-                .Select(t => (t.Kind, t.Text, t.StartIndex))
+            new SyntaxTokenEnumerator("")
+                .ToListOfTuple()
                 .Should()
                 .BeEquivalentTo(new []
                 {
@@ -120,8 +151,8 @@ namespace Calculator.Tests
         [Fact]
         public void SyntaxTokenEnumerable_ShouldByAbleToHandle_WhiteSpaces()
         {
-            new SyntaxTokenEnumerable(" \t\n")
-                .Select(t => (t.Kind, t.Text, t.StartIndex))
+            new SyntaxTokenEnumerator(" \t\n")
+                .ToListOfTuple()
                 .Should()
                 .BeEquivalentTo(new[]
                 {

@@ -11,7 +11,7 @@ namespace Calculator.Tests
     {
         private static ParserResult Parse(string input)
         {
-            var parser = new SyntaxTokenParser(new SyntaxTokenEnumerable(input));
+            var parser = new SyntaxTokenParser(new SyntaxTokenEnumerator(input));
             return parser.Parse();
         }
 

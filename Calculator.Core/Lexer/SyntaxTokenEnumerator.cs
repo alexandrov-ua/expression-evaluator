@@ -5,32 +5,11 @@ using System.Text;
 
 namespace Calculator.Core.Lexer
 {
-    public class SyntaxTokenEnumerable : IEnumerable<SyntaxToken>
+    public ref struct SyntaxTokenEnumerator
     {
-        private readonly string _input;
-
-        public SyntaxTokenEnumerable(string input)
-        {
-            _input = input;
-        }
-
-        public IEnumerator<SyntaxToken> GetEnumerator()
-        {
-            return new SyntaxTokenEnumerator(_input);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-    }
-
-    public class SyntaxTokenEnumerator : IEnumerator<SyntaxToken>
-    {
-        private readonly string _input;
+        private readonly ReadOnlySpan<char> _input;
         private int _index;
         private bool _endOfFile = false;
-        object IEnumerator.Current => Current;
         public SyntaxToken Current { get; private set; }
 
         public SyntaxTokenEnumerator(string input)
@@ -46,31 +25,31 @@ namespace Calculator.Core.Lexer
                 switch (_input[_index])
                 {
                     case '+':
-                        Current = new SyntaxToken(SyntaxTokenKind.Plus, _index, _input.Substring(_index, 1));
+                        Current = new SyntaxToken(SyntaxTokenKind.Plus, _index, _input.Slice(_index, 1));
                         _index++;
                         return true;
                     case '-':
-                        Current = new SyntaxToken(SyntaxTokenKind.Minus, _index, _input.Substring(_index, 1));
+                        Current = new SyntaxToken(SyntaxTokenKind.Minus, _index, _input.Slice(_index, 1));
                         _index++;
                         return true;
                     case '/':
-                        Current = new SyntaxToken(SyntaxTokenKind.Slash, _index, _input.Substring(_index, 1));
+                        Current = new SyntaxToken(SyntaxTokenKind.Slash, _index, _input.Slice(_index, 1));
                         _index++;
                         return true;
                     case '*':
-                        Current = new SyntaxToken(SyntaxTokenKind.Star, _index, _input.Substring(_index, 1));
+                        Current = new SyntaxToken(SyntaxTokenKind.Star, _index, _input.Slice(_index, 1));
                         _index++;
                         return true;
                     case '^':
-                        Current = new SyntaxToken(SyntaxTokenKind.Hat, _index, _input.Substring(_index, 1));
+                        Current = new SyntaxToken(SyntaxTokenKind.Hat, _index, _input.Slice(_index, 1));
                         _index++;
                         return true;
                     case '(':
-                        Current = new SyntaxToken(SyntaxTokenKind.OpenParenthesis, _index, _input.Substring(_index, 1));
+                        Current = new SyntaxToken(SyntaxTokenKind.OpenParenthesis, _index, _input.Slice(_index, 1));
                         _index++;
                         return true;
                     case ')':
-                        Current = new SyntaxToken(SyntaxTokenKind.CloseParenthesis, _index, _input.Substring(_index, 1));
+                        Current = new SyntaxToken(SyntaxTokenKind.CloseParenthesis, _index, _input.Slice(_index, 1));
                         _index++;
                         return true;
                     case var d when Char.IsDigit(d): //match numbers
@@ -90,7 +69,7 @@ namespace Calculator.Core.Lexer
                     case var w when Char.IsWhiteSpace(w)://skipping white spaces
                         continue;
                     default:
-                        Current = new SyntaxToken(SyntaxTokenKind.Unknown, _index, _input.Substring(_index, 1));
+                        Current = new SyntaxToken(SyntaxTokenKind.Unknown, _index, _input.Slice(_index, 1));
                         _index++;
                         return true;
                 }
@@ -105,21 +84,28 @@ namespace Calculator.Core.Lexer
             return false;
         }
 
-        private string ReadChars(Func<char, bool> func)
+        private ReadOnlySpan<char> ReadChars(Func<char, bool> func)
         {
-            StringBuilder sb = new StringBuilder();
+            var count = 0;
             for (var i = 0; _index + i < _input.Length && func(_input[_index + i]); i++)
             {
-                sb.Append(_input[_index + i]);
+                count++;
             }
 
-            return sb.ToString();
+            return _input.Slice(_index, count);
         }
 
         public void Reset()
         {
             _index = 0;
             _endOfFile = false;
+        }
+        
+        public SyntaxToken GetAndMoveNext()
+        {
+            var current = Current;
+            MoveNext();
+            return current;
         }
 
         public void Dispose()

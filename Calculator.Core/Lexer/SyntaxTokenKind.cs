@@ -6,22 +6,10 @@ namespace Calculator.Core.Lexer
 {
     public enum SyntaxTokenKind
     {
-        [BinaryOperationPrecedence(1)]
-        [SyntaxTokenGroup(SyntaxTokenGroup.Unary)]
-        [SyntaxTokenGroup(SyntaxTokenGroup.Binary)]
         Plus,
-        [BinaryOperationPrecedence(1)]
-        [SyntaxTokenGroup(SyntaxTokenGroup.Unary)]
-        [SyntaxTokenGroup(SyntaxTokenGroup.Binary)]
         Minus,
-        [BinaryOperationPrecedence(2)]
-        [SyntaxTokenGroup(SyntaxTokenGroup.Binary)]
         Star,
-        [BinaryOperationPrecedence(2)]
-        [SyntaxTokenGroup(SyntaxTokenGroup.Binary)]
         Slash,
-        [BinaryOperationPrecedence(3)]
-        [SyntaxTokenGroup(SyntaxTokenGroup.Binary)]
         Hat,
         OpenParenthesis,
         CloseParenthesis,
@@ -37,26 +25,34 @@ namespace Calculator.Core.Lexer
         Unary,
     }
 
-
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
-    public class SyntaxTokenGroupAttribute : Attribute
+    public static class SyntaxTokenKindExtensions
     {
-        public SyntaxTokenGroup Group { get; }
-
-        public SyntaxTokenGroupAttribute(SyntaxTokenGroup @group)
+        public static int GetBinaryOperationPrecedence(this SyntaxTokenKind kind)
         {
-            Group = @group;
+            return kind switch
+            {
+                SyntaxTokenKind.Plus => 1,
+                SyntaxTokenKind.Minus => 1,
+                SyntaxTokenKind.Star => 2,
+                SyntaxTokenKind.Slash => 2,
+                SyntaxTokenKind.Hat => 3,
+                _ => 0
+            };
+        }
+        public static bool IsInTokenGroup(this SyntaxTokenKind kind, SyntaxTokenGroup @group)
+        {
+            return (kind, @group) switch
+            {
+                (SyntaxTokenKind.Plus, SyntaxTokenGroup.Binary) => true,
+                (SyntaxTokenKind.Plus, SyntaxTokenGroup.Unary) => true,
+                (SyntaxTokenKind.Minus, SyntaxTokenGroup.Binary) => true,
+                (SyntaxTokenKind.Minus, SyntaxTokenGroup.Unary) => true,
+                (SyntaxTokenKind.Star, SyntaxTokenGroup.Binary) => true,
+                (SyntaxTokenKind.Slash, SyntaxTokenGroup.Binary) => true,
+                (SyntaxTokenKind.Hat, SyntaxTokenGroup.Binary) => true,
+                (_, _) => false
+            };
         }
     }
 
-    [AttributeUsage(AttributeTargets.Field)]
-    public class BinaryOperationPrecedenceAttribute : Attribute
-    {
-        public int Precedence { get; }
-
-        public BinaryOperationPrecedenceAttribute(int precedence)
-        {
-            Precedence = precedence;
-        }
-    }
 }

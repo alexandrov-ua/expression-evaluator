@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Calculator.Core.Tools;
 using Calculator.Core.Lexer;
 using Calculator.Core.SyntaxThree;
 
 namespace Calculator.Core.Parser
 {
-    public class SyntaxTokenParser
+    public ref struct SyntaxTokenParser
     {
-        private readonly IEnumerator<SyntaxToken> _tokens;
+        private SyntaxTokenEnumerator _tokens;
         private readonly DiagnosticsBag _diagnostics = new DiagnosticsBag();
-        public SyntaxTokenParser(IEnumerable<SyntaxToken> tokens)
+        public SyntaxTokenParser(SyntaxTokenEnumerator tokens)
         {
-            _tokens = tokens.GetEnumerator();
+            _tokens = tokens;
         }
 
         public ParserResult Parse()
@@ -69,6 +68,7 @@ namespace Calculator.Core.Parser
 
         private SyntaxNode ParseUnaryExpression()
         {
+         
             var operatorToken = _tokens.GetAndMoveNext();
             var operand = ParseUnaryOrParenthesisOrValue();
             return UnaryOperatorNode.Create(operatorToken, operand);
@@ -85,7 +85,7 @@ namespace Calculator.Core.Parser
         private SyntaxNode ParseNumberLiteral()
         {
             var literal = MatchToken(SyntaxTokenKind.Number);
-            var value = string.IsNullOrEmpty(literal.Text) ? 0.0d : double.Parse(literal.Text, CultureInfo.InvariantCulture);
+            var value = literal.Text.IsEmpty ? 0.0d : double.Parse(literal.Text, CultureInfo.InvariantCulture);
             return new NumberNode(value);
         }
     }

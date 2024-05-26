@@ -11,7 +11,7 @@ namespace Calculator.Core.Evaluator
     {
         public EvaluatorResult Evaluate(string input)
         {
-            var parser = new SyntaxTokenParser(new SyntaxTokenEnumerable(input));
+            var parser = new SyntaxTokenParser(new SyntaxTokenEnumerator(input));
             var parserResult = parser.Parse();
             if (!parserResult.IsSuccessful)
             {
