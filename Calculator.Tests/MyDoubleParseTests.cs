@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using Calculator.Core;
 using FluentAssertions;
@@ -15,15 +16,6 @@ public class MyDoubleParseTests
         _testOutputHelper = testOutputHelper;
     }
     
-    
-    [Fact]
-    public void Foo()
-    {
-        _testOutputHelper.WriteLine(((byte)'0').ToString());
-        _testOutputHelper.WriteLine(((byte)'1').ToString());
-        _testOutputHelper.WriteLine(((byte)'9').ToString());
-    }
-
     [Theory]
     [InlineData("1")]
     [InlineData("12")]
@@ -33,14 +25,30 @@ public class MyDoubleParseTests
     [InlineData("123.2435")]
     [InlineData("1234567.8901")]
     [InlineData("0.5")]
-    public void Bar(string p)
+    public void Positive(string p)
     {
         MyDoubleParser.Parse(p).Should().Be(double.Parse(p, CultureInfo.InvariantCulture));
     }
 
     [Fact]
-    public void Qux()
+    public void EmptyString()
     {
-        _testOutputHelper.WriteLine((0.0/10).ToString());
+        MyDoubleParser.Parse("").Should().Be(0);
+    }
+
+    [Theory]
+    [InlineData("/")]
+    [InlineData(":")]
+    [InlineData("asdf")]
+    [InlineData("-1.0")]
+    [InlineData("1,000.0")]
+    [InlineData("5E-324")]
+    [InlineData("1.7976931348623157E+308")]
+    public void Negative(string p)
+    {
+        Action func = () => MyDoubleParser.Parse(p);
+
+        func.Should().Throw<Exception>();
+
     }
 }
