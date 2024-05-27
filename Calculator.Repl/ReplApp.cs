@@ -19,16 +19,13 @@ namespace Calculator.Repl
         {
             if (args.Length > 0)
             {
-                for (int i = 0; i < 100; i++)
-                {
-                    EvaluateString(args[0]);    
-                }
+                EvaluateString(args[0]);
                 return;
             }
 
             var exit = false;
             ShowHelp();
-            
+
             while (!exit)
             {
                 Console.Write(">");
@@ -82,7 +79,8 @@ namespace Calculator.Repl
                 switch (entry.Kind)
                 {
                     case DiagnosticKind.UnexpectedToken:
-                        Console.WriteLine($"{input}\n{MakeArrow(entry.Span)}\n Expected token: {entry.Parameters[0]}\n But found: {entry.Parameters[1]}");
+                        Console.WriteLine(
+                            $"{input}\n{MakeArrow(entry.Span)}\n Expected token: {entry.Parameters[0]}\n But found: {entry.Parameters[1]}");
                         break;
                     default:
                         Console.WriteLine($"Error: {entry.Kind}");
@@ -104,6 +102,7 @@ namespace Calculator.Repl
         class ConsoleColorRegion : IDisposable
         {
             private ConsoleColor _temp;
+
             public ConsoleColorRegion(ConsoleColor color)
             {
                 _temp = Console.ForegroundColor;
