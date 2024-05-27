@@ -24,7 +24,7 @@ namespace Calculator.Core.Evaluator
                 return new EvaluatorResult(false, Double.NaN, parserResult.Diagnostics);
             }
 
-            return new EvaluatorResult(true, result, parserResult.Diagnostics.Concat(syntaxThreeVisitor.Diagnostics).ToList());
+            return new EvaluatorResult(true, result, new DiagnosticsEntry[0]);
         }
     }
 }
