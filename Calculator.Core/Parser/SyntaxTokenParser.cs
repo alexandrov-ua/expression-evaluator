@@ -85,7 +85,7 @@ namespace Calculator.Core.Parser
         private SyntaxNode ParseNumberLiteral()
         {
             var literal = MatchToken(SyntaxTokenKind.Number);
-            var value = literal.Text.IsEmpty ? 0.0d : double.Parse(literal.Text, CultureInfo.InvariantCulture);
+            var value = literal.Text.IsEmpty ? 0.0d : MyDoubleParser.Parse(literal.Text); //double.Parse(literal.Text, CultureInfo.InvariantCulture);
             return new NumberNode(value);
         }
     }

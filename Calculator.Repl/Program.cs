@@ -10,8 +10,13 @@ namespace Calculator.Repl
     {
         static void Main(string[] args)
         {
+            foreach (var s in args)
+            {
+                Console.WriteLine(s);
+            }
+            
             ReplAppFactory.Create()
-                .StartMainLoop();
+                .StartMainLoop(args);
         }
     }
 }

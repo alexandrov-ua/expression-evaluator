@@ -5,7 +5,7 @@ using Calculator.Core.Lexer;
 
 namespace Calculator.Core.Parser
 {
-    public class DiagnosticsEntry
+    public readonly struct DiagnosticsEntry
     {
         public DiagnosticSeverity Severity { get; }
         public DiagnosticKind Kind { get;  }

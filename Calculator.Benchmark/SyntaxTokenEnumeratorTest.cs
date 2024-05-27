@@ -13,7 +13,7 @@ public class SyntaxTokenEnumeratorTest
     public string Input { get; set; }   
     
     [Benchmark(Baseline = true)]
-    public int Evaluate()
+    public int ParseTokens()
     {
         var t = new SyntaxTokenEnumerator(Input);
         var n = 0;
@@ -26,7 +26,7 @@ public class SyntaxTokenEnumeratorTest
     }
 
     [Benchmark]
-    public int EvaluateNew()
+    public int ParseTokensNew()
     {
         var t = new NewImplementation.SyntaxTokenEnumerator(Input);
         var n = 0;

@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 using Calculator.Benchmark;
 
-//BenchmarkRunner.Run<DoubleTests>();
+//BenchmarkRunner.Run<FloatParseTest>();
 BenchmarkRunner.Run<ExpressionEvaluatorBenchmark>();
 //BenchmarkRunner.Run<SyntaxTokenEnumeratorTest>();

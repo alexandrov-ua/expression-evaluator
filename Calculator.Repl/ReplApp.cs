@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using Calculator.Core.FirstImplementation.Evaluator;
-using Calculator.Core.FirstImplementation.Parser;
+using Calculator.Core.Evaluator;
+using Calculator.Core.Parser;
 
 namespace Calculator.Repl
 {
@@ -15,10 +15,20 @@ namespace Calculator.Repl
             _stringEvaluator = stringEvaluator;
         }
 
-        public void StartMainLoop()
+        public void StartMainLoop(string[] args)
         {
-            ShowHelp();
+            if (args.Length > 0)
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    EvaluateString(args[0]);    
+                }
+                return;
+            }
+
             var exit = false;
+            ShowHelp();
+            
             while (!exit)
             {
                 Console.Write(">");
