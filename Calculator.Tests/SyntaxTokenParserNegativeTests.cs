@@ -10,7 +10,7 @@ namespace Calculator.Tests
 {
     public class SyntaxTokenParserNegativeTests
     {
-        private static DiagnosticsEntry[] ParseFailed(string input)
+        private static IReadOnlyCollection<DiagnosticsEntry> ParseFailed(string input)
         {
             var parser = new SyntaxTokenParser(new SyntaxTokenEnumerator(input));
             var parserResult = parser.Parse();

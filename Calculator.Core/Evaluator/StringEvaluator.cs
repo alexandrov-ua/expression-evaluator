@@ -15,16 +15,16 @@ namespace Calculator.Core.Evaluator
             var parserResult = parser.Parse();
             if (!parserResult.IsSuccessful)
             {
-                return new EvaluatorResult(false, Double.NaN, parserResult.Diagnostics.ToArray());
+                return new EvaluatorResult(false, Double.NaN, parserResult.Diagnostics);
             }
             var syntaxThreeVisitor = new SyntaxThreeVisitor();
             var result = parserResult.Root.Accept(syntaxThreeVisitor);
             if (syntaxThreeVisitor.Diagnostics.Any())
             {
-                return new EvaluatorResult(false, Double.NaN, parserResult.Diagnostics.ToArray());
+                return new EvaluatorResult(false, Double.NaN, parserResult.Diagnostics);
             }
 
-            return new EvaluatorResult(true, result, parserResult.Diagnostics.Concat(syntaxThreeVisitor.Diagnostics).ToArray());
+            return new EvaluatorResult(true, result, parserResult.Diagnostics.Concat(syntaxThreeVisitor.Diagnostics).ToList());
         }
     }
 }

@@ -44,6 +44,11 @@ namespace Calculator.Core.Parser
         {
             _list.Add(new DiagnosticsEntry(DiagnosticSeverity.Error, kind, new TextSpan(startIndex, length), parameters));
         }
+
+        public IReadOnlyCollection<DiagnosticsEntry> ToReadOnlyCollection()
+        {
+            return _list;
+        }
     }
 
     public enum DiagnosticKind

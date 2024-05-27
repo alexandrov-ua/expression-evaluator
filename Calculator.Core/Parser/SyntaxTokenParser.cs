@@ -21,7 +21,7 @@ namespace Calculator.Core.Parser
             _tokens.MoveNext();
             var root = ParseBinaryExpression();
             var endOfFile = MatchToken(SyntaxTokenKind.EndOfFile);
-            return new ParserResult(!_diagnostics.Any(), root, _diagnostics.ToArray());
+            return new ParserResult(!_diagnostics.Any(), root, _diagnostics.ToReadOnlyCollection());
         }
 
         private SyntaxToken MatchToken(SyntaxTokenKind kind)
@@ -39,7 +39,7 @@ namespace Calculator.Core.Parser
 
         private SyntaxNode ParseBinaryExpression(int parentPrecedence = 0)
         {
-            SyntaxNode left = ParseUnaryOrParenthesisOrValue();
+            var left = ParseUnaryOrParenthesisOrValue();
             while (true)
             {
                 var precedence = _tokens.Current.Kind.GetBinaryOperationPrecedence();
