@@ -1,8 +1,11 @@
-﻿using Calculator.Core.Evaluator;
+﻿using System.IO;
+using System.Linq;
+using Calculator.Core.Evaluator;
 using Calculator.Core.Lexer;
 using Calculator.Core.Parser;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Calculator.Tests
 {
@@ -77,6 +80,13 @@ namespace Calculator.Tests
         {
             var result = EvaluateSuccess("1+2^3*4+5");
             result.Should().Be(38);
+        }
+
+        [Fact]
+        public void Stress()
+        {
+            var result = EvaluateSuccess(File.ReadAllText("test_data.txt"));
+            result.Should().Be(0.40303212926178134);
         }
     }
 }

@@ -23,4 +23,11 @@
       <ProjectReference Include="..\Calculator.Core\Calculator.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="test_data.txt" />
+      <EmbeddedResource Include="test_data.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </EmbeddedResource>
+    </ItemGroup>
+
 </Project>

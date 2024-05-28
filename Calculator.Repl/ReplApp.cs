@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Calculator.Core.Evaluator;
 using Calculator.Core.Parser;
 
@@ -12,6 +14,7 @@ namespace Calculator.Repl
 
         public ReplApp(IStringEvaluator stringEvaluator)
         {
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             _stringEvaluator = stringEvaluator;
         }
 
@@ -19,7 +22,12 @@ namespace Calculator.Repl
         {
             if (args.Length > 0)
             {
-                EvaluateString(args[0]);
+                EvaluateString(args[0] switch
+                {
+                    "-e" => args[1],
+                    "-f" => File.ReadAllText(args[1]),
+                    _ => throw new NotSupportedException($"{args[0]} is not supported")
+                });
                 return;
             }
 
